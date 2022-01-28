@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 
 import { GlobalStyle } from '../Base/BaseStyle';
 
-import useLocalStorage from '../Cookies/useLocalStorage';
+import useLocalStorage from '../hooks/useLocalStorage';
 import ContactForm from './Form';
 import Section from './Section';
 import Contacts from './Contacts';

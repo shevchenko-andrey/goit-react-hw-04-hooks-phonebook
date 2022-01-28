@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useRef } from 'react';
 
 import { Formik, ErrorMessage } from 'formik';
 
@@ -22,45 +22,43 @@ const schema = yup.object().shape({
   number: yup.string().phone().required(),
 });
 
-class ContactForm extends Component {
-  loginInputId = nanoid(8);
-  telInputId = nanoid(8);
+const ContactForm = ({ onSubmit }) => {
+  const loginInputId = useRef(nanoid());
+  const telInputId = useRef(nanoid());
 
-  handleSubmit = (values, { resetForm }) => {
-    this.props.onSubmit(values);
+  const handleSubmit = (values, { resetForm }) => {
+    onSubmit(values);
     resetForm();
   };
-  formError = message => <FormText>{message}</FormText>;
-  render() {
-    const { loginInputId } = this.loginInputId;
-    const { telInputId } = this.telInputId;
-    return (
-      <Formik
-        initialValues={{ name: '', number: '' }}
-        validationSchema={schema}
-        onSubmit={this.handleSubmit}
-      >
-        <FormStyled autoComplete="off">
+  const formError = message => <FormText>{message}</FormText>;
+
+  return (
+    <Formik
+      initialValues={{ name: '', number: '' }}
+      validationSchema={schema}
+      onSubmit={handleSubmit}
+    >
+      <FormStyled autoComplete="off">
+        <div>
+          <label htmlFor={loginInputId.current}>Name</label>
           <div>
-            <label htmlFor={loginInputId}>Name</label>
-            <div>
-              <InputForm id={loginInputId} name="name" type="text" />
-              <ErrorMessage name="name" render={this.formError} />
-            </div>
+            <InputForm id={loginInputId.current} name="name" type="text" />
+            <ErrorMessage name="name" render={formError} />
           </div>
-          <PhoneWrapper>
-            <label htmlFor={telInputId}>Number</label>
-            <div>
-              <InputForm id={telInputId} name="number" type="tel" />
-              <ErrorMessage name="number" render={this.formError} />
-            </div>
-          </PhoneWrapper>
-          <Button type="submit">Add contact</Button>
-        </FormStyled>
-      </Formik>
-    );
-  }
-}
+        </div>
+        <PhoneWrapper>
+          <label htmlFor={telInputId.current}>Number</label>
+          <div>
+            <InputForm id={telInputId.current} name="number" type="tel" />
+            <ErrorMessage name="number" render={formError} />
+          </div>
+        </PhoneWrapper>
+        <Button type="submit">Add contact</Button>
+      </FormStyled>
+    </Formik>
+  );
+};
+
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
